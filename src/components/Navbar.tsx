@@ -35,7 +35,7 @@ const Navbar: React.FC = () => {
           <div className="flex-shrink-0">
             <a href="#home">
               <img
-                src="/assets/logo.png"
+                src="/logo.png"
                 alt="Lumen Point Logo"
                 className="h-10 w-auto cursor-pointer"
               />
