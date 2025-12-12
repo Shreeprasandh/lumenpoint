@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-color: #111;
+  --text-color: #fff;
+  --hero-bg: #e6e6e6;
+  --hero-text: #111;
+  --scroll-text: rgba(212, 158, 141, 0.45);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  .font-serif {
+    font-family: 'Playfair Display', 'Cinzel', serif;
+  }
+
+  .font-sans {
+    font-family: 'Inter', 'Satoshi', sans-serif;
+  }
+}
+
+/* Hero Section Animations */
+@keyframes slideUp {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-100%); }
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scrollLeft {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.hero-scrolling-text {
+  animation: scrollLeft 78s linear infinite;
+}
+
+.animate-slideUp {
+  animation: slideUp 1.2s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+  animation-delay: 2s;
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease forwards;
+}
