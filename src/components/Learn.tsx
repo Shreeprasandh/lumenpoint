@@ -138,7 +138,7 @@ const Learn: React.FC = () => {
             {videos.map((card) => (
               <motion.div
                 key={card.id}
-                className="bg-[#DED1BD] rounded-xl p-4 cursor-pointer w-[180px] shadow-sm"
+                className="bg-[#DED1BD] rounded-xl p-4 cursor-pointer w-[260px] shadow-sm"
                 whileHover={{ scale: 1.03 }}
                 onClick={() => setSelectedVideo(card)}
               >
