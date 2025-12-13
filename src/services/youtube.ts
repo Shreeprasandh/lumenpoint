@@ -7,9 +7,23 @@ interface YouTubeVideo {
   publishedAt: string;
 }
 
+interface YouTubeSearchItem {
+  id: {
+    videoId: string;
+  };
+  snippet: {
+    title: string;
+    thumbnails: {
+      high?: { url: string };
+      default: { url: string };
+    };
+    publishedAt: string;
+  };
+}
+
 const YOUTUBE_API_KEY = 'AIzaSyDoA2JXkyhxmH09UsavtmIkwSF-Kwop-A4';
 
-export const fetchRecentVideos = async (maxResults: number = 3): Promise<YouTubeVideo[]> => {
+export const fetchRecentVideos = async (maxResults: number = 4): Promise<YouTubeVideo[]> => {
   try {
     // First get channel ID from handle
     const channelResponse = await fetch(
@@ -29,7 +43,7 @@ export const fetchRecentVideos = async (maxResults: number = 3): Promise<YouTube
 
     const data = await response.json();
 
-    return data.items.map((item: any) => ({
+    return data.items.map((item: YouTubeSearchItem) => ({
       id: item.id.videoId,
       title: item.snippet.title,
       thumbnail: item.snippet.thumbnails.high?.url || item.snippet.thumbnails.default.url,
@@ -59,9 +73,17 @@ export const fetchRecentVideos = async (maxResults: number = 3): Promise<YouTube
       },
       {
         id: '3',
-        title: 'Complex Systems Simplified',
+        title: 'AUDI\'s F1 GAMBIT: How They Plan to Build a Championship Winning Team by 2030',
         thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
         duration: '15:22',
+        videoId: 'dQw4w9WgXcQ',
+        publishedAt: '2024-01-01'
+      },
+      {
+        id: '4',
+        title: 'OPPENHEIMER\'s PARADOX: Creator of the Atomic Age vs. Destroyer of Worlds - The True Story',
+        thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
+        duration: '18:45',
         videoId: 'dQw4w9WgXcQ',
         publishedAt: '2024-01-01'
       }

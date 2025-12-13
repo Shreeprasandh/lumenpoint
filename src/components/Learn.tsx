@@ -133,12 +133,12 @@ const Learn: React.FC = () => {
         </h2>
 
         {/* Video Cards Row */}
-        <div className="overflow-x-auto pb-4 mb-8">
-          <div className="flex space-x-6 min-w-max">
+        <div className="mb-8">
+          <div className="flex space-x-6 justify-center">
             {videos.map((card) => (
               <motion.div
                 key={card.id}
-                className="bg-[#DED1BD] rounded-xl p-4 cursor-pointer min-w-[250px] shadow-sm"
+                className="bg-[#DED1BD] rounded-xl p-4 cursor-pointer w-[180px] shadow-sm"
                 whileHover={{ scale: 1.03 }}
                 onClick={() => setSelectedVideo(card)}
               >
@@ -155,7 +155,7 @@ const Learn: React.FC = () => {
                     {card.duration}
                   </div>
                 </div>
-                <h3 className="text-lg font-serif text-[#683B2B] line-clamp-2">{card.title}</h3>
+                <h3 className="text-lg font-serif text-[#683B2B] line-clamp-1">{card.title}</h3>
               </motion.div>
             ))}
           </div>
