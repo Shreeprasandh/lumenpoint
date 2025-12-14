@@ -134,11 +134,11 @@ const Learn: React.FC = () => {
 
         {/* Video Cards Row */}
         <div className="mb-8">
-          <div className="flex space-x-6 justify-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 justify-items-center">
             {videos.map((card) => (
               <motion.div
                 key={card.id}
-                className="bg-[#DED1BD] rounded-xl p-4 cursor-pointer w-[260px] shadow-sm"
+                className="bg-[#DED1BD] rounded-xl p-4 cursor-pointer w-full max-w-[260px] shadow-sm"
                 whileHover={{ scale: 1.03 }}
                 onClick={() => setSelectedVideo(card)}
               >

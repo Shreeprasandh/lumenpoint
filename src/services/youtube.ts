@@ -102,19 +102,27 @@ export const getAssetPath = (type: 'thumbnail' | 'mindmap', videoTitle: string):
   let path: string;
   if (type === 'thumbnail') {
     // Thumbnails are JPEG files
-    if (cleanTitle.includes('f1') || cleanTitle.includes('engine')) {
+    if (cleanTitle.includes('f1') && cleanTitle.includes('engine')) {
       path = '/thumbnails/F1 2026 Engine Rules EXPLAINED  The 5050 Power Split That Changes EVERYTHING.jpeg';
-    } else if (cleanTitle.includes('ai') || cleanTitle.includes('luxury')) {
+    } else if (cleanTitle.includes('ai') && cleanTitle.includes('luxury')) {
       path = '/thumbnails/AI LUXURY FACTORY Build a $10,000Mo YouTube Channel (100% Automated).jpeg';
+    } else if (cleanTitle.includes('audi') && cleanTitle.includes('f1')) {
+      path = '/thumbnails/AUDI\'s F1 GAMBIT How They Plan to Build a Championship Winning Team by 2030.jpeg';
+    } else if (cleanTitle.includes('oppenheimer') && cleanTitle.includes('paradox')) {
+      path = '/thumbnails/OPPENHEIMER\'s PARADOX Creator of the Atomic Age vs. Destroyer of Worlds  The True Story.jpeg';
     } else {
       path = '/thumbnails/default-thumbnail.jpeg';
     }
   } else {
     // Mindmaps are PNG files
-    if (cleanTitle.includes('f1') || cleanTitle.includes('engine')) {
+    if (cleanTitle.includes('f1') && cleanTitle.includes('engine')) {
       path = '/mindmaps/F1 2026 Engine Rules EXPLAINED  The 5050 Power Split That Changes EVERYTHING.png';
-    } else if (cleanTitle.includes('ai') || cleanTitle.includes('luxury')) {
+    } else if (cleanTitle.includes('ai') && cleanTitle.includes('luxury')) {
       path = '/mindmaps/AI LUXURY FACTORY Build a $10,000Mo YouTube Channel (100% Automated).png';
+    } else if (cleanTitle.includes('audi') && cleanTitle.includes('f1')) {
+      path = '/mindmaps/AUDI\'s F1 GAMBIT How They Plan to Build a Championship Winning Team by 2030.png';
+    } else if (cleanTitle.includes('oppenheimer') && cleanTitle.includes('paradox')) {
+      path = '/mindmaps/OPPENHEIMER\'s PARADOX Creator of the Atomic Age vs. Destroyer of Worlds  The True Story.png';
     } else {
       path = '/mindmaps/default-mindmap.png';
     }
