@@ -229,7 +229,7 @@ const Learn: React.FC = () => {
                         whileHover={{ scale: 1.02 }}
                         onClick={() => {
                           const mindmapPath = getAssetPath('mindmap', selectedVideo.title);
-                          window.open(mindmapPath, '_blank');
+                          setLightboxImage(mindmapPath);
                         }}
                       >
                         <Map className="mb-2" size={24} />
@@ -255,7 +255,7 @@ const Learn: React.FC = () => {
                         whileHover={{ scale: 1.02 }}
                         onClick={() => {
                           const infographicPath = getAssetPath('thumbnail', selectedVideo.title);
-                          window.open(infographicPath, '_blank');
+                          setLightboxImage(infographicPath);
                         }}
                       >
                         <ImageIcon className="mb-2" size={24} />

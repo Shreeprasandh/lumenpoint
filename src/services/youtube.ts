@@ -95,37 +95,69 @@ export const fetchAllVideos = async (): Promise<YouTubeVideo[]> => {
   return fetchRecentVideos(20); // Fetch more videos for "View All"
 };
 
-export const getAssetPath = (type: 'thumbnail' | 'mindmap', videoTitle: string): string => {
-  // Clean the title for filename - match the actual file naming pattern
-  const cleanTitle = videoTitle.toLowerCase();
+// Available asset files
+const thumbnailFiles = [
+  'AI LUXURY FACTORY Build a $10,000Mo YouTube Channel (100% Automated).jpeg',
+  'AUDI\'s F1 GAMBIT How They Plan to Build a Championship Winning Team by 2030.jpeg',
+  'BITCOIN Explained Digital Gold or Digital Fraud The Financial Revolution in 5 Minutes.png',
+  'F1 2026 Engine Rules EXPLAINED  The 5050 Power Split That Changes EVERYTHING.jpeg',
+  'OPPENHEIMER\'s PARADOX Creator of the Atomic Age vs. Destroyer of Worlds  The True Story.jpeg',
+  'THE ASCENT OF AI From Today\'s Peak to the \'Ultimate Form\' (10 Stages of Artificial Intelligence).png'
+];
 
-  let path: string;
-  if (type === 'thumbnail') {
-    // Thumbnails are JPEG files
-    if (cleanTitle.includes('f1') && cleanTitle.includes('engine')) {
-      path = '/thumbnails/F1 2026 Engine Rules EXPLAINED  The 5050 Power Split That Changes EVERYTHING.jpeg';
-    } else if (cleanTitle.includes('ai') && cleanTitle.includes('luxury')) {
-      path = '/thumbnails/AI LUXURY FACTORY Build a $10,000Mo YouTube Channel (100% Automated).jpeg';
-    } else if (cleanTitle.includes('audi') && cleanTitle.includes('f1')) {
-      path = '/thumbnails/AUDI\'s F1 GAMBIT How They Plan to Build a Championship Winning Team by 2030.jpeg';
-    } else if (cleanTitle.includes('oppenheimer') && cleanTitle.includes('paradox')) {
-      path = '/thumbnails/OPPENHEIMER\'s PARADOX Creator of the Atomic Age vs. Destroyer of Worlds  The True Story.jpeg';
-    } else {
-      path = '/thumbnails/default-thumbnail.jpeg';
-    }
-  } else {
-    // Mindmaps are PNG files
-    if (cleanTitle.includes('f1') && cleanTitle.includes('engine')) {
-      path = '/mindmaps/F1 2026 Engine Rules EXPLAINED  The 5050 Power Split That Changes EVERYTHING.png';
-    } else if (cleanTitle.includes('ai') && cleanTitle.includes('luxury')) {
-      path = '/mindmaps/AI LUXURY FACTORY Build a $10,000Mo YouTube Channel (100% Automated).png';
-    } else if (cleanTitle.includes('audi') && cleanTitle.includes('f1')) {
-      path = '/mindmaps/AUDI\'s F1 GAMBIT How They Plan to Build a Championship Winning Team by 2030.png';
-    } else if (cleanTitle.includes('oppenheimer') && cleanTitle.includes('paradox')) {
-      path = '/mindmaps/OPPENHEIMER\'s PARADOX Creator of the Atomic Age vs. Destroyer of Worlds  The True Story.png';
-    } else {
-      path = '/mindmaps/default-mindmap.png';
+const mindmapFiles = [
+  'AI LUXURY FACTORY Build a $10,000Mo YouTube Channel (100% Automated).png',
+  'AUDI\'s F1 GAMBIT How They Plan to Build a Championship Winning Team by 2030.png',
+  'BITCOIN Explained Digital Gold or Digital Fraud The Financial Revolution in 5 Minutes.png',
+  'F1 2026 Engine Rules EXPLAINED  The 5050 Power Split That Changes EVERYTHING.png',
+  'OPPENHEIMER\'s PARADOX Creator of the Atomic Age vs. Destroyer of Worlds  The True Story.png',
+  'THE ASCENT OF AI From Today\'s Peak to the \'Ultimate Form\' (10 Stages of Artificial Intelligence).png'
+];
+
+const normalizeText = (text: string): string => {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, '') // Remove special characters
+    .replace(/\s+/g, ' ') // Normalize spaces
+    .trim();
+};
+
+const findBestMatch = (title: string, files: string[]): string | null => {
+  const normalizedTitle = normalizeText(title);
+
+  // First try exact match after normalization
+  for (const file of files) {
+    const normalizedFile = normalizeText(file.replace(/\.(jpeg|png)$/i, ''));
+    if (normalizedFile === normalizedTitle) {
+      return file;
     }
   }
-  return encodeURI(path);
+
+  // Then try partial matches
+  for (const file of files) {
+    const normalizedFile = normalizeText(file.replace(/\.(jpeg|png)$/i, ''));
+    const titleWords = normalizedTitle.split(' ');
+    const fileWords = normalizedFile.split(' ');
+
+    // Check if most significant words match
+    const commonWords = titleWords.filter(word => fileWords.includes(word));
+    if (commonWords.length >= Math.min(titleWords.length, fileWords.length) * 0.7) {
+      return file;
+    }
+  }
+
+  return null;
+};
+
+export const getAssetPath = (type: 'thumbnail' | 'mindmap', videoTitle: string): string => {
+  const files = type === 'thumbnail' ? thumbnailFiles : mindmapFiles;
+  const matchedFile = findBestMatch(videoTitle, files);
+
+  if (matchedFile) {
+    const folder = type === 'thumbnail' ? 'thumbnails' : 'mindmaps';
+    return encodeURI(`/${folder}/${matchedFile}`);
+  }
+
+  // Fallback to default
+  return type === 'thumbnail' ? '/thumbnails/default-thumbnail.jpeg' : '/mindmaps/default-mindmap.png';
 };
