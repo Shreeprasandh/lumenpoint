@@ -21,7 +21,6 @@ const Contact: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setSubmitStatus('idle');
 
     try {
       // EmailJS configuration
@@ -38,12 +37,10 @@ const Contact: React.FC = () => {
 
       await emailjs.send(serviceId, templateId, templateParams, publicKey);
 
-      setSubmitStatus('success');
       setFormData({ name: '', email: '', message: '' });
       alert('Thank you for your message! We will get back to you soon.');
     } catch (error) {
       console.error('Email send failed:', error);
-      setSubmitStatus('error');
       alert('Sorry, there was an error sending your message. Please try again.');
     } finally {
       setIsSubmitting(false);

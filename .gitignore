@@ -21,3 +21,13 @@ dist-ssr
 *.sln
 *.sw?
 .env
+credentials.json
+client_secret.json
+__pycache__/
+*.log
+client_secret_*.json
+public/infographics/
+public/mindmaps/
+token.json
+client_secret.json
+credentials.json

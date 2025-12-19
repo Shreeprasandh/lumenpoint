@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Map, Image as ImageIcon, Send, X, Grid3X3, Download } from 'lucide-react';
-import { fetchRecentVideos, fetchAllVideos, getAssetPath } from '../services/youtube';
+import { fetchRecentVideos, fetchAllVideos, getAssetPath, checkAPIQuota } from '../services/youtube';
 import { generateAIResponse, getInitialSuggestions } from '../services/ai';
 
 interface VideoCard {
@@ -24,11 +24,24 @@ const Learn: React.FC = () => {
   const [showAllVideos, setShowAllVideos] = useState(false);
   const [loading, setLoading] = useState(true);
 
+
   useEffect(() => {
     const loadVideos = async () => {
       try {
+        // First check if API quota is available
+        const quotaAvailable = await checkAPIQuota();
+        if (!quotaAvailable) {
+          setLoading(false);
+          return;
+        }
+
         const recentVideos = await fetchRecentVideos();
-        setVideos(recentVideos);
+        // Check if quota exceeded (special marker returned)
+        if (recentVideos.length === 1 && recentVideos[0].id === 'quota_exceeded') {
+          setVideos([]);
+        } else {
+          setVideos(recentVideos);
+        }
         setLoading(false);
       } catch (error) {
         console.error('Error loading videos:', error);
@@ -113,7 +126,25 @@ const Learn: React.FC = () => {
         viewport={{ once: true }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="text-[#683B2B]">Loading videos...</div>
+          <div className="text-[#683B2B]">Fetching videos from YouTube API...</div>
+          <div className="text-[#683B2B] text-sm opacity-70 mt-2">Loading latest content from our channel</div>
+        </div>
+      </motion.section>
+    );
+  }
+
+  if (videos.length === 0 && !loading) {
+    return (
+      <motion.section
+        className="py-32 bg-[#FAF6F2]"
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: true }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="text-[#683B2B] mb-4">No Videos Available</div>
+          <div className="text-[#683B2B] text-sm opacity-70">Unable to load videos at this time. Please try again later.</div>
         </div>
       </motion.section>
     );
@@ -134,8 +165,8 @@ const Learn: React.FC = () => {
 
         {/* Video Cards Row */}
         <div className="mb-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 justify-items-center">
-            {videos.map((card) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 justify-items-center">
+            {videos.slice(0, 4).map((card) => (
               <motion.div
                 key={card.id}
                 className="bg-[#DED1BD] rounded-xl p-4 cursor-pointer w-full max-w-[260px] shadow-sm"
@@ -227,8 +258,8 @@ const Learn: React.FC = () => {
                       <motion.div
                         className="bg-[#DED1BD] p-4 rounded-lg cursor-pointer flex-1"
                         whileHover={{ scale: 1.02 }}
-                        onClick={() => {
-                          const mindmapPath = getAssetPath('mindmap', selectedVideo.title);
+                        onClick={async () => {
+                          const mindmapPath = await getAssetPath('mindmap', selectedVideo.videoId);
                           setLightboxImage(mindmapPath);
                         }}
                       >
@@ -236,8 +267,8 @@ const Learn: React.FC = () => {
                         <h4 className="font-serif text-[#683B2B]">Mind Map</h4>
                       </motion.div>
                       <button
-                        onClick={() => {
-                          const mindmapPath = getAssetPath('mindmap', selectedVideo.title);
+                        onClick={async () => {
+                          const mindmapPath = await getAssetPath('mindmap', selectedVideo.videoId);
                           const link = document.createElement('a');
                           link.href = mindmapPath;
                           link.download = `mindmap-${selectedVideo.title}.png`;
@@ -253,8 +284,8 @@ const Learn: React.FC = () => {
                       <motion.div
                         className="bg-[#DED1BD] p-4 rounded-lg cursor-pointer flex-1"
                         whileHover={{ scale: 1.02 }}
-                        onClick={() => {
-                          const infographicPath = getAssetPath('thumbnail', selectedVideo.title);
+                        onClick={async () => {
+                          const infographicPath = await getAssetPath('infographic', selectedVideo.videoId);
                           setLightboxImage(infographicPath);
                         }}
                       >
@@ -262,8 +293,8 @@ const Learn: React.FC = () => {
                         <h4 className="font-serif text-[#683B2B]">Infographic</h4>
                       </motion.div>
                       <button
-                        onClick={() => {
-                          const infographicPath = getAssetPath('thumbnail', selectedVideo.title);
+                        onClick={async () => {
+                          const infographicPath = await getAssetPath('infographic', selectedVideo.videoId);
                           const link = document.createElement('a');
                           link.href = infographicPath;
                           link.download = `infographic-${selectedVideo.title}.jpeg`;
