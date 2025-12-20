@@ -1,0 +1,12 @@
+for the file upload and mapping 
+
+
+cd lumenpoint ; python scripts/smart_sync.py
+
+
+for the commit and push 
+
+
+cd lumenpoint ; git add public/assets_mapping.json ; git commit -m "Update assets mapping after smart sync" ; git push
+
+cd lumenpoint ; git add working_commands.txt ; git commit -m "added working_commands" ; git push
