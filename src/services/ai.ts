@@ -8,8 +8,12 @@ interface VideoContext {
 }
 
 // Initialize Gemini AI
-const genAI = new GoogleGenerativeAI('AIzaSyBE_aMmFCyXVqlHS_x7FDwds4iMACXpXQQ');
+const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY as string | undefined;
+const genAI = new GoogleGenerativeAI(GEMINI_API_KEY || '');
 const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+if (!GEMINI_API_KEY) {
+  console.warn('[ai] Missing VITE_GEMINI_API_KEY. AI calls will likely fail.');
+}
 
 // Mock video context database (used as source material for AI)
 const videoContexts: Record<string, VideoContext> = {
@@ -83,6 +87,10 @@ export const getInitialSuggestions = (videoTitle: string): string[] => {
 
 export const generateAIResponse = async (userMessage: string, videoTitle: string): Promise<string> => {
   try {
+    if (!GEMINI_API_KEY) {
+      return generateFallbackResponse(videoTitle);
+    }
+
     const context = getVideoContext(videoTitle);
 
     // Create a more general, conversational prompt that can handle any topic
@@ -109,12 +117,12 @@ Respond naturally and conversationally, like you're chatting with a friend. Be e
   } catch (error) {
     console.error('Error generating AI response:', error);
     // Fallback to mock responses if API fails
-    return generateFallbackResponse(userMessage, videoTitle);
+    return generateFallbackResponse(videoTitle);
   }
 };
 
 // Fallback function for when API fails - natural chat-like responses
-const generateFallbackResponse = (userMessage: string, videoTitle: string): string => {
+const generateFallbackResponse = (videoTitle: string): string => {
   const context = getVideoContext(videoTitle);
 
   // Natural, conversational responses that feel like chatting with a friend
